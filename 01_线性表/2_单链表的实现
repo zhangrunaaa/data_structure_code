@@ -1,0 +1,130 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef int Mytype;
+
+typedef struct
+{
+	Mytype data;
+	struct Node* next;
+}Node;
+// 1 : 单链表的初始化
+void Node_Init(Node* p)
+{
+	p->data = -1; //将头节点的数值
+	p->next = NULL;
+} 
+// 2 : 单链表的遍历
+void Print_Node(Node* p)
+{
+	Node* temp = p->next; // 这里引入的中间变量的目的是为了不破坏头指针
+	while (temp!= NULL)
+	{
+		printf("%d ", temp->data);
+		temp = temp->next; // 将链表中的结点进行实时的更新
+	}
+	printf("\n");
+}
+
+// 3：头插法：添加相关元素
+void Head_Add(Node* p, Mytype num)
+{
+	Node* node = (Node*)malloc(sizeof(Node));
+	node->data= num;
+	node->next = p->next;
+	p->next = node;
+}
+
+// 4: 尾插法：分为两个部分：第一个是找到该链表的相关尾结点，第二：在尾节点插入数据
+Node* Tail_Add(Node* p,Mytype num)
+{
+	Node* temp = p; 
+	while (temp->next != NULL)
+	{
+		temp = temp->next;
+	}
+	Node* node = (Node*)(malloc(sizeof(Node)));
+	node->data = num;
+	temp->next = node;// 将尾节点next，指向新生成的节点
+	node->next = NULL;
+ 	// 循环找到该链表的尾节点
+}
+// 5：在目标位置进行插入
+void Add_Goal(Node* p, int postion,Mytype num)
+{
+	Node* temp = p;
+	int i = 0;
+	while (i < postion - 1)
+	{
+		temp = temp->next;
+		i++;
+	}
+	Node* new = (Node*)(malloc(sizeof(Node)));
+	new->data = num;
+	new->next= temp->next;
+	temp->next = new;
+}
+// 6: 删除目标位置的元素，且打印输出删除的元素
+void Delete_num(Node* p, int postion)
+{
+	Node* temp = p;
+	int i = 0;
+	while (i < postion - 1)
+	{
+		temp = temp->next; // 利用循环这里我们找到的是要删除节点的前一个节点
+		i++;
+	}
+	Node* goal = temp->next;
+	temp->next = goal->next;
+	printf("删除该位置上的元素为%d ", goal->data);
+	free(goal);
+	printf("\n");
+}
+// 7：释放整个链表
+void Free_list(Node* p)
+{
+	Node* q;
+	p = p->next;
+	while (p->next!= NULL)
+	{
+		q = p->next;
+		free(p);
+		p = q;
+	}
+	p->next = NULL;
+}
+// 8： 获取到链表长度
+void Get_length(Node* list)
+{
+	int length = 0;
+	while (list->next != NULL)
+	{
+		length++;
+		list = list->next;
+	}
+	printf("此时链表的长度为%d\n", length);
+}
+int main()
+{
+	Node list;
+	Node_Init(&list);
+	Head_Add(&list, 2);
+	Head_Add(&list, 8);
+	Head_Add(&list, 16);
+	printf("头插法遍历：\n");
+	Print_Node(&list);
+	printf("尾插法:\n");
+	Tail_Add(&list, 10);
+	Tail_Add(&list, 12);
+	printf("尾插法遍历：\n");
+	Print_Node(&list);
+	Add_Goal(&list, 2, 0);
+	printf("目标位置插入元素\n");
+	Print_Node(&list);
+	printf("删除目标元素并返回\n");
+	Delete_num(&list, 2);
+	Print_Node(&list);
+	Get_length(&list);
+	Free_list(&list);
+	return 0;
+}
