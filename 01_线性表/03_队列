@@ -1,0 +1,84 @@
+#include<stdio.h>
+#include<stdlib.h>
+// 这里仅仅是用顺序表进行实现简单的队类内容，循环队列在下一个代码实现中
+#define Maxsize 5
+typedef int Mytype;
+
+typedef struct
+{
+	Mytype arr[Maxsize];
+	int rear;
+	int front;
+}Queen;
+
+// 1: 初始化 
+void Queen_Init(Queen* p)
+{
+	p->front = 0;
+	p->rear=0;
+}
+
+// 2:判空？
+void Check_Queen(Queen* p)
+{
+	if (p->front == p->rear)
+	{
+		printf("此时的队列为空队列\n");
+	}
+}
+// 3: 入队：
+void Add_Queen(Queen* p,Mytype num)
+{
+	// 该情况只是使用与队列长度够用，且没有出队的情况下进行的
+	// 当队尾指针知道最后了，也即是Maxsize的空间放不下了的时候，代表在整个过程中，既有出队
+	// 又有入队，此时需要进行简单的判断
+	if (!Check_full(p))
+	{
+		printf("此队类满！\n");
+		return 0;
+	}
+	p->arr[p->rear] = num;
+	p->rear++;
+}
+int  Check_full(Queen* p)
+{
+	if (p->front == 0 && p->rear == Maxsize-1)
+	{
+		return 0;
+	}
+	else if(p->front!=0)// 在这里进行将所空出来的相关空间进行移动
+	{
+		int step = p->front; // 队头之所以有空的位置，代表有元素入队且又有元素出队
+		for (int i = step; i < p->rear; i++)
+		{
+			p->arr[i-step] = p->arr[i];
+		}
+		p->front = 0;
+		p->rear = p->rear - step;
+		return 1;
+	}
+}
+// 4: 出队
+void Out_Queen(Queen* p)
+{
+	printf("此时的出队元素为%d\n", p->arr[p->front]); // 此时的元素从尾进，对头出
+	p->front = p->front + 1; // 元素出队之后，其下标指针进行移动
+} 
+int main()
+{
+	Queen Ember;
+	Queen_Init(&Ember);
+	Check_Queen(&Ember);
+	Add_Queen(&Ember, 1);
+	Add_Queen(&Ember, 0);
+	Add_Queen(&Ember, 2);
+	Add_Queen(&Ember, 8);
+	Out_Queen(&Ember);
+	Out_Queen(&Ember);
+	Add_Queen(&Ember, 6);
+	Out_Queen(&Ember);
+	Out_Queen(&Ember);
+	Out_Queen(&Ember);
+	Check_Queen(&Ember);
+	return 0;
+}
